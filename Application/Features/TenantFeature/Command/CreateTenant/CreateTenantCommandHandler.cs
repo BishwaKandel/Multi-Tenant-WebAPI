@@ -123,8 +123,6 @@ namespace Application.Features.TenantFeature.Command.CreateTenant
             await _userManager.AddToRoleAsync(adminUser, UserRole.Admin.ToString());
 
             return (true, temporaryPassword);
-
-            hellolo
         }
     }
 
