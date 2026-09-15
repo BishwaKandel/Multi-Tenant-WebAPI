@@ -111,7 +111,7 @@ namespace Application.Features.TenantFeature.Command.CreateTenant
             };
 
             //var temporaryPassword = GenerateTemporaryPassword();
-            var temporaryPassword = tenant.EmailAddress;
+            var temporaryPassword = "Tenant@123";
 
             var result = await _userManager.CreateAsync(adminUser, temporaryPassword);
             if (!result.Succeeded)

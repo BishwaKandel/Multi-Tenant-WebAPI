@@ -14,7 +14,7 @@ namespace Multi_Tenant_WebAPI.Controllers
     [Route("api/[controller]")]
     public class TenantController : BaseController
     {
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles ="SuperAdmin")]
         [HttpPost("CreateTenant")]
         public async Task<IActionResult> CreateTenant([FromBody] CreateTenantCommand command , CancellationToken token )
         {
@@ -36,6 +36,7 @@ namespace Multi_Tenant_WebAPI.Controllers
         }
 
         [HttpGet("ViewAllTenants")]
+        [Authorize(Roles = "SuperAdmin")]
 
         public async Task<IActionResult> GetAllTenants()
         {

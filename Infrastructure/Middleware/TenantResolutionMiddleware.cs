@@ -37,7 +37,7 @@ namespace Infrastructure.Middleware
 
                     var tenant = await masterDb.Tenants
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(t => t.TenantId == tenantIdClaim);
+                        .FirstOrDefaultAsync(t => t.Id == tenantIdClaim);
 
                     return tenant?.DbConnStr; // null if tenant not found — see below
                 });

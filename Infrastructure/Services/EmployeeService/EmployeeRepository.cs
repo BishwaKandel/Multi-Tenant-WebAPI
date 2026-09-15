@@ -12,9 +12,9 @@ namespace Infrastructure.Services.EmployeeService
 {
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
-        private readonly MasterDbContext _context;
+        private readonly TenantDbContext _context;
 
-        public EmployeeRepository(MasterDbContext context) : base(context)
+        public EmployeeRepository(TenantDbContext context) : base(context)
         {
             _context = context;
         }

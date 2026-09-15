@@ -2,6 +2,7 @@
 using Application.Features.EmployeeFeature.Command.DeleteEmployee;
 using Application.Features.EmployeeFeature.Command.UpdateEmployee;
 using Application.Features.EmployeeFeature.Query.GetAllEmployees;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Multi_Tenant_WebAPI.Controllers;
 
@@ -32,6 +33,7 @@ namespace Multi_Employee_WebAPI.Controllers
             return Ok(await Mediator.Send(command, token));
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet("ViewAllEmployees")]
 
         public async Task<IActionResult> GetAllEmployees()

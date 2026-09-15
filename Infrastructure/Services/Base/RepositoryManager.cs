@@ -4,28 +4,27 @@ using Application.Interfaces.Base;
 using Infrastructure.Persistence;
 using Infrastructure.Services.EmployeeService;
 using Infrastructure.Services.TenantService;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Services.Base
 {
     public class RepositoryManager : IRepositoryManager
     {
-
         private readonly MasterDbContext _masterContext;
+        private readonly TenantDbContext _tenantContext;
 
-        public RepositoryManager(MasterDbContext masterContext)
+        public RepositoryManager(MasterDbContext masterContext, TenantDbContext tenantContext)
         {
             _masterContext = masterContext;
+            _tenantContext = tenantContext;
         }
+
         public ITenantRepository tenantRepository => new TenantRepository(_masterContext);
+        public IEmployeeRepository employeeRepository => new EmployeeRepository(_tenantContext);
 
-        public IEmployeeRepository employeeRepository => new EmployeeRepository(_masterContext);
-
-        public Task SaveAsync()
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+            await _masterContext.SaveChangesAsync();
+            await _tenantContext.SaveChangesAsync();
         }
     }
 }

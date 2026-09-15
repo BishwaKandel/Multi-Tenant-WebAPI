@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Multi_Tenant_WebAPI.Data;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -83,6 +84,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    options.MapInboundClaims = false;   
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -92,7 +95,10 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+
+        RoleClaimType = ClaimTypes.Role,   
+        NameClaimType = ClaimTypes.Name,
     };
 });
 builder.Services.AddControllers();
@@ -115,9 +121,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();          
-app.UseAuthorization();           
+app.UseAuthentication();
+
 app.UseMiddleware<TenantResolutionMiddleware>();
+app.Use(async (context, next) =>
+{
+    var tenantService = context.RequestServices.GetRequiredService<ICurrentTenantService>();
+    Console.WriteLine($"Resolved TenantId: {tenantService.TenantId}");
+    Console.WriteLine($"Resolved ConnectionString: {tenantService.ConnectionString}");
+    await next();
+});
+app.UseAuthorization();
 await SeedDatabase();
 app.MapControllers();
 
